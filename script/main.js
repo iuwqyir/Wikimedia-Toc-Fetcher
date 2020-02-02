@@ -8,7 +8,11 @@ function setSubmitListener() {
 		var title = prepareParam(document.getElementById('title').value);
 		var lang = document.getElementById('lang').value;
 		const toc = await getTableOfContents(title, lang);
-		document.getElementById('table-of-contents').appendChild(toc);
+		var containerEl = document.getElementById('table-of-contents');
+		containerEl.innerHTML = '';
+		if (toc) {
+			containerEl.appendChild(toc);
+		}
 	});
 }
 
