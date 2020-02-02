@@ -38,21 +38,41 @@ function prepareToc(data, articleUrl) {
 		return null;
 	}
 
-	var toc,
+	var toc = document.createElement('div'),
 	level = 0,
 	parents = [];
 
 	data.toc.entries.forEach(function(entry, idx) {
-		if (level > entry.level) {
+		if (level < entry.level) {
 			//create new sublist
+			var list = document.createElement('ul');
+			list.appendChild(createListItem(entry.html, entry.number, entry.anchor, articleUrl));
+			parents[entry.level] = list;
 		} else if (level === entry.level) {
 			//create same level element
+			parents[level].appendChild(createListItem(entry.html, entry.number, entry.anchor, articleUrl));
 		} else {
 			//close current sublist && add to previous list
+			parents[level - 1].lastChild.appendChild(parents[level]);
+			parents.splice(level, 1);
+			parents[entry.level].appendChild(createListItem(entry.html, entry.number, entry.anchor, articleUrl));
 		}
+		level = entry.level;
 	});
-
+	toc.appendChild(parents[1]);
 	return toc;
+}
+
+function createListItem(name, number, anchor, articleUrl)
+{
+	var listItem = document.createElement('li');
+	var link = document.createElement('a');
+	var text = document.createTextNode(number + ' ' + name);
+	link.appendChild(text);
+	link.href = articleUrl + '#' + anchor;
+	link.target = '_blank';
+	listItem.appendChild(link);
+	return listItem;
 }
 
 function getArticleUrl(title, language) {
