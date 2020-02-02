@@ -43,19 +43,20 @@ function prepareToc(data, articleUrl) {
 	parents = [];
 
 	data.toc.entries.forEach(function(entry, idx) {
+		var listItem = createListItem(entry.html, entry.number, entry.anchor, articleUrl);
 		if (level < entry.level) {
 			//create new sublist
 			var list = document.createElement('ul');
-			list.appendChild(createListItem(entry.html, entry.number, entry.anchor, articleUrl));
+			list.appendChild(listItem);
 			parents[entry.level] = list;
 		} else if (level === entry.level) {
 			//create same level element
-			parents[level].appendChild(createListItem(entry.html, entry.number, entry.anchor, articleUrl));
+			parents[level].appendChild(listItem);
 		} else {
 			//close current sublist && add to previous list
 			parents[level - 1].lastChild.appendChild(parents[level]);
 			parents.splice(level, 1);
-			parents[entry.level].appendChild(createListItem(entry.html, entry.number, entry.anchor, articleUrl));
+			parents[entry.level].appendChild(listItem);
 		}
 		level = entry.level;
 	});
