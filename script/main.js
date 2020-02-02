@@ -3,11 +3,12 @@ window.onload = function () {
 }
 
 function setSubmitListener() {
-	document.getElementById('form').addEventListener("submit", function(e) {
+	document.getElementById('form').addEventListener("submit", async function(e) {
 		e.preventDefault();
 		var title = prepareParam(document.getElementById('title').value);
 		var lang = document.getElementById('lang').value;
-		const toc = getTableOfContents(title, lang);
+		const toc = await getTableOfContents(title, lang);
+		document.getElementById('table-of-contents').appendChild(toc);
 	});
 }
 
