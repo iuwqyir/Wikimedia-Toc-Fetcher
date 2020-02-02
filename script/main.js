@@ -30,11 +30,9 @@ async function getTableOfContents(title, language) {
 			const responseJson = await response.json();
 			return prepareToc(responseJson, getArticleUrl(title, language));
 		case 404:
-			//show not found error
-			break;
+			return createErrorMessage('Could not find any articles with that title!');
 		default:
-			//show generic error
-			break;
+			return createErrorMessage('Something went wrong, please try again.');
 	}
 }
 
@@ -79,6 +77,13 @@ function createListItem(name, number, anchor, articleUrl)
 	link.target = '_blank';
 	listItem.appendChild(link);
 	return listItem;
+}
+
+function createErrorMessage(msg) {
+	var error = document.createElement('p');
+	error.classList.add('error');
+	error.appendChild(document.createTextNode(msg));
+	return error;
 }
 
 function getArticleUrl(title, language) {
