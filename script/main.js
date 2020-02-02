@@ -1,3 +1,6 @@
+const maxRequests = 200;
+const REQUEST_COUNT = 'req_count';
+
 window.onload = function () {
 	setSubmitListener();
 }
@@ -5,13 +8,18 @@ window.onload = function () {
 function setSubmitListener() {
 	document.getElementById('toc-fetch').addEventListener("submit", async function(e) {
 		e.preventDefault();
-		var title = prepareParam(document.getElementById('title').value);
-		var lang = document.getElementById('lang').value;
-		const toc = await getTableOfContents(title, lang);
 		var containerEl = document.getElementById('table-of-contents');
-		containerEl.innerHTML = '';
-		if (toc) {
-			containerEl.appendChild(toc);
+		if (isRequestAllowed()) {
+			var title = prepareParam(document.getElementById('title').value);
+			var lang = document.getElementById('lang').value;
+			const toc = await getTableOfContents(title, lang);
+			containerEl.innerHTML = '';
+			if (toc) {
+				containerEl.appendChild(toc);
+			}
+		} else {
+			containerEl.innerHTML = '';
+			containerEl.appendChild(createErrorMessage('You have exceeded the request limit!'));
 		}
 	});
 }
@@ -25,6 +33,8 @@ async function getTableOfContents(title, language) {
 			'User-Agent': 'toomas.oosalu@gmail.com'
 		}
 	});
+	var count = sessionStorage.getItem(REQUEST_COUNT);
+	sessionStorage.setItem(REQUEST_COUNT, count + 1);
 	switch(response.status) {
 		case 200:
 			const responseJson = await response.json();
@@ -103,4 +113,9 @@ function prepareParam(param) {
 function strip(html) {
 	var doc = new DOMParser().parseFromString(html, 'text/html');
 	return doc.body.textContent || '';
+}
+
+function isRequestAllowed() {
+	var requests = sessionStorage.getItem(REQUEST_COUNT);
+	return requests ? (requests < maxRequests) : true;
 }
