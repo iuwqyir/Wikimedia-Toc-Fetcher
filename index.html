@@ -6,16 +6,20 @@
 		<link rel="stylesheet" type="text/css" href="./style/main.css">
 	</head>
 	<body>
-		<div id="content">
-			<div id="form">
-				<form>
+		<div class="content">
+			<div class="form">
+				<form id="toc-fetch">
+					<p>
 					<label for="title">Article Title:</label>
 					<input type="text" name="title" id="title" required>
+					</p>
+					<p>
 					<label for="lang">Language:</label>
 					<select name="lang" id="lang">
 						<option value="en">English</option>
 					</select>
-					<input type="submit" value="Fetch">
+					</p>
+					<p><input type="submit" value="Fetch"></p>
 				</form>
 			</div>
 			<div id="table-of-contents">
