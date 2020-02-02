@@ -44,7 +44,6 @@ function prepareToc(data, articleUrl) {
 	var toc = document.createElement('div'),
 	level = 0,
 	parents = [];
-
 	data.toc.entries.forEach(function(entry, idx) {
 		var listItem = createListItem(entry.html, entry.number, entry.anchor, articleUrl);
 		if (level < entry.level) {
@@ -69,6 +68,9 @@ function prepareToc(data, articleUrl) {
 
 function createListItem(name, number, anchor, articleUrl)
 {
+	name = strip(name);
+	number = strip(number);
+	anchor = strip(anchor);
 	var listItem = document.createElement('li');
 	var link = document.createElement('a');
 	var text = document.createTextNode(number + ' ' + name);
@@ -92,7 +94,13 @@ function getArticleUrl(title, language) {
 
 function prepareParam(param) {
 	if (typeof param !== 'string') {
-		return param;
+		return '';
 	}
+	param = strip(param);
 	return param.trim().replace(/ /g, '_');
+}
+
+function strip(html) {
+	var doc = new DOMParser().parseFromString(html, 'text/html');
+	return doc.body.textContent || '';
 }
